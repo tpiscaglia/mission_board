@@ -28,7 +28,7 @@ namespace mission_board
         public string jpg_letter_directory = Directory.GetCurrentDirectory() + "\\Missionary_Letters\\jpg\\";
         public float letter_dpi = 500;
 
-        public SortedList<string, missionary> missionary_list = new SortedList<string, missionary>();
+        public SortedList<string, Missionary> missionary_list = new SortedList<string, Missionary>();
 
         public bool close_form = false;
 
@@ -136,7 +136,7 @@ namespace mission_board
 
         private void load_map_markers()
         {
-            foreach (missionary miss in missionary_list.Values)
+            foreach (Missionary miss in missionary_list.Values)
             {
                 Pushpin pushpin = new Pushpin();
                 pushpin.Location = new Location(miss.Latitude, miss.Longitude);
@@ -178,7 +178,7 @@ namespace mission_board
             {
                 string[] missionary_data_rows = File.ReadAllLines(csv_file);
                 string[] split_line;
-                missionary missionary_obj;
+                Missionary missionary_obj;
                 foreach (string line in missionary_data_rows)
                 {
                     if (!line.Contains("Display_Name")) // skip first line, I don't like doing it this way, shameful
@@ -187,7 +187,7 @@ namespace mission_board
                         // Display_Name	Mission_Field	First_Name	Last_Name	Latitude	Longitude	Email	Profile_Picture
 
                         split_line = line.Split(",".ToCharArray());
-                        missionary_obj = new missionary();
+                        missionary_obj = new Missionary();
 
                         if (split_line.Length == valid_column_count) // so we don't go out of bounds on the array
                         {
@@ -337,7 +337,7 @@ namespace mission_board
             string missionary_name = null;
             letter_name = letter_name.ToLower();
 
-            foreach (missionary miss in missionary_list.Values)
+            foreach (Missionary miss in missionary_list.Values)
             {
                 // This alias has to be in the letter name!!! Make sure it's unique!!
                 if (letter_name.Contains(miss.LetterAlias.ToLower()))
@@ -355,7 +355,7 @@ namespace mission_board
             SortedList<string, string> missionary_list2 = new SortedList<string, string>();
 
             // Sort alphabetically
-            foreach (missionary miss in missionary_list.Values)
+            foreach (Missionary miss in missionary_list.Values)
             {
                 missionary_list2.Add(miss.LastName + "-" + miss.FirstName, miss.LastName + ", " + miss.FirstName);
             }
@@ -368,7 +368,7 @@ namespace mission_board
 
         private void clear_missionary_letters()
         {
-            foreach (missionary miss in missionary_list.Values)
+            foreach (Missionary miss in missionary_list.Values)
                 miss.Letters.Clear();
         }
 
@@ -406,7 +406,7 @@ namespace mission_board
             string missionary_name = null;
             name = name.ToLower();
 
-            foreach (missionary miss in missionary_list.Values)
+            foreach (Missionary miss in missionary_list.Values)
             {
                 
                 if (name.Contains(miss.LetterAlias.ToLower()) ||
