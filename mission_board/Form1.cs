@@ -100,8 +100,6 @@ namespace mission_board
                 panel1.Visible = false;
                 infobox_panel.Visible = false;
                 elementHost1.Visible = true;
-                //Controls.SetChildIndex(elementHost1, 1);
-                //Controls.SetChildIndex(infobox_panel, 0);
             }
             else
             {
@@ -149,19 +147,17 @@ namespace mission_board
         private void Pushpin_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             Pushpin pin = (Pushpin)sender;
-            string missionary_name = pin.Name.Replace("_", " ");
-            //Controls.SetChildIndex(infobox_panel, 0);
+            string missionaryName = pin.Name.Replace("_", " ");
 
-            // The most simple solution that took me a long time to get to
             Point coordinates = Cursor.Position;
 
             infobox_panel.Visible = false;
-            infobox_panel.Location = new Point(coordinates.X, coordinates.Y);//((int)(calculate_infobox_positionX(pin) - elementHost1.Location.X), (int)(calculate_infobox_positionY(pin) + elementHost1.Location.Y));
+            infobox_panel.Location = new Point(coordinates.X, coordinates.Y);
             infobox_panel.Visible = true;
             infobox_panel.BringToFront();
             moveTracker = 0;
-            inforbox_name_label.Text = missionary_name;
-            field_label.Text = missionaryList[missionary_name].MissionField;
+            inforbox_name_label.Text = missionaryName;
+            field_label.Text = missionaryList[missionaryName].MissionField;
             selectedPushpinName = pin.Name;
         }
 
@@ -267,7 +263,7 @@ namespace mission_board
                 }
                 else
                 {
-                    // write error that the letter name doesn't match a missionary
+                    WriteErrorToLog("Letter does not match any missionary.");
                 }
             }
         }
@@ -282,7 +278,6 @@ namespace mission_board
             string missionaryName = string.Empty;
             int month = 0, day = 0;
             string monthString = string.Empty, dayString = string.Empty;
-            //recent_letter_listView1.Items.Clear();
             recent_letter_listBox.Items.Clear();
 
             if (sortedFiles.Count < maxListLetters)
@@ -315,10 +310,6 @@ namespace mission_board
                         else
                             break;
                     }
-                }
-                else
-                {
-                    // don't know who the letter belongs too
                 }
             }
         }
@@ -382,8 +373,6 @@ namespace mission_board
                 infobox_panel.Visible = false;
                 string name = missionary_listBox.Items[missionary_listBox.SelectedIndex].ToString();
                 string missionary_name = LookupMissionaryListbox(name);
-                // mapUserControl1.Map.Center.Latitude = missionary_list[missionary_name].Latitude;
-                // mapUserControl1.Map.Center.Longitude = missionary_list[missionary_name].Longitude;
                 Location mapCenter = new Location(missionaryList[missionary_name].Latitude,
                                                    missionaryList[missionary_name].Longitude);
                 mapUserControl1.Map.SetView(mapCenter, 5);
@@ -397,11 +386,9 @@ namespace mission_board
                 inforbox_name_label.Text = missionary_name;
                 field_label.Text = missionaryList[missionary_name].MissionField;
                 selectedPushpinName = name;
-                //update_profile(name, null);
             }
         }
 
-        // Critical method for associating a letter with the missionary
         private string LookupMissionaryListbox(string name)
         {
             string missionaryName = null;
@@ -440,15 +427,12 @@ namespace mission_board
             if (missionaryList[missionaryName].Letters.Count > 0)
             {
                 selectedLetter = missionaryList[missionaryName].Letters[0].FullName;
-                //pdfDocumentViewer1.LoadFromFile(missionary_list[missionary_name].Letters[0].FullName); // not good, you should pass a index or lookup the selected letter. don't asume!!!!!!
                 pictureBox1.Image = Image.FromFile(GetLetterPages(missionaryList[missionaryName].Letters[0].FullName)[0]);
 
             }
             else
             {
                 pictureBox1.Image = null;
-                // pdfDocumentViewer1.LoadFromFile("No Letter Present.pdf");
-                // Nothing to load
             }
             PopulateIndividualMissionaryLetterList(missionaryName);
 
@@ -463,23 +447,16 @@ namespace mission_board
                 missionary_name = LookupMissionaryListbox(missionary_name);
 
                 if (!missionaryList.ContainsKey(missionary_name))
-                    missionary_name = null;
+                    return;
 
                 if (missionary_name != null)
                 {
                     selectedLetter = missionaryList[missionary_name].Letters[missionary_letter_listBox.SelectedIndex].FullName;
-                    //  pdfDocumentViewer1.LoadFromFile(missionary_list[missionary_name].Letters[missionary_letter_listBox.SelectedIndex].FullName);
                     pictureBox1.Image = Image.FromFile(GetLetterPages(selectedLetter)[0]);
-
-                }
-                else
-                {
-                    // can't load profile letter
                 }
             }
         }
 
-        //private void load_picture_box
         private void home_button_Click(object sender, EventArgs e)
         {
             ShowMap(true);
@@ -487,7 +464,7 @@ namespace mission_board
 
         private void close_button_Click(object sender, EventArgs e)
         {
-            //Application.Exit();
+
         }
 
         private void down_button_Click(object sender, EventArgs e)
@@ -508,9 +485,7 @@ namespace mission_board
 
         private void view_profile_button_Click(object sender, EventArgs e)
         {
-            //MessageBox.Show(selected_pushpin_name);
             ShowMap(false);
-            //infobox_panel.Visible = false;
             UpdateProfile(selectedPushpinName);
         }
 
@@ -528,11 +503,13 @@ namespace mission_board
 
         public void SendEmail(string recipient, string sender, string smtp_server, string subject, string message, string attachment)
         {
+
+            /// TODO:
+            /// REMOVE HARD CODED CREDENTIALS AND MOVE TO APP.CONFIG
             try
             {
                 MailMessage mailMsg = new MailMessage();
 
-                //foreach (String str_email in recipient)
                 mailMsg.To.Add(new MailAddress(recipient));
                 mailMsg.From = new MailAddress(sender);
                 mailMsg.Subject = subject;
@@ -549,11 +526,9 @@ namespace mission_board
                 smtpClient.UseDefaultCredentials = false;
                 smtpClient.Credentials = new NetworkCredential("parkviewmissions@gmail.com", "stark9355");
                 smtpClient.Send(mailMsg);
-                // MessageBox.Show("Here");
             }
             catch (Exception e)
             {
-                //Console.WriteLine(Environment.NewLine + "Email Failed");
                 File.AppendAllText("error.log", DateTime.Now.ToShortDateString() + " "
                                             + DateTime.Now.ToShortTimeString() + " "
                                             + e.Message + Environment.NewLine);
@@ -563,6 +538,8 @@ namespace mission_board
 
         private void keyboard1_SendButtonClick(object sender, EventArgs e)
         {
+            /// TODO:
+            /// VERY BAD - FIX THIS
             if (keyboard1.Text == "stark9355")
                 Form1.ActiveForm.Dispose();
             keyboard1.Visible = false;
@@ -576,8 +553,6 @@ namespace mission_board
             ShowMap(true);
             infobox_panel.Visible = false;
             string missionary_name = selectedMissionary;
-            // mapUserControl1.Map.Center.Latitude = missionary_list[missionary_name].Latitude;
-            // mapUserControl1.Map.Center.Longitude = missionary_list[missionary_name].Longitude;
             Location center_map = new Location(missionaryList[missionary_name].Latitude,
                                                missionaryList[missionary_name].Longitude);
             mapUserControl1.Map.SetView(center_map, 5);
@@ -591,14 +566,11 @@ namespace mission_board
             inforbox_name_label.Text = missionary_name;
             field_label.Text = missionaryList[missionary_name].MissionField;
             selectedPushpinName = missionary_name;
-            //update_profile(name, null);
-
-
         }
 
         private void keyboard1_Leave(object sender, EventArgs e)
         {
-            //MessageBox.Show("please");
+            
         }
 
         private void panel1_MouseClick(object sender, MouseEventArgs e)
@@ -608,7 +580,7 @@ namespace mission_board
 
         private void button1_Click(object sender, EventArgs e)
         {
-            // pdfDocumentViewer1.SetZoom(Spire.PdfViewer.Forms.ZoomMode.FitWidth);
+            
         }
 
         private void recent_letter_listBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -621,15 +593,11 @@ namespace mission_board
                 if (missionaryList.ContainsKey(missionary_letter))
                     missionary_letter = missionaryList[missionary_letter].LetterAlias;
                 else
-                    missionary_letter = null;
+                    return;
 
                 if (missionary_letter != null)
                 {
-                    UpdateProfile(missionary_letter); // pass the proper parameter!!!! not null!!
-                }
-                else
-                {
-                    // can't load profile
+                    UpdateProfile(missionary_letter);
                 }
             }
         }
