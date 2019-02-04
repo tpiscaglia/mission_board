@@ -173,7 +173,7 @@ namespace mission_board
 
             if (!File.Exists(csvFile))
             {
-                WriteErrorToLog("FATAL ERROR: " + csvFile + " is either missing or corrupted." + Environment.NewLine);
+                WriteErrorToLog($"FATAL ERROR: {csvFile} is either missing or corrupted. {Environment.NewLine}");
                 return false;
             }
             try
@@ -206,11 +206,11 @@ namespace mission_board
                             }
                             catch (OverflowException)
                             {
-                                WriteErrorToLog(splitLine[4] + " is outside the range of the Int64 type for " + missionary.DisplayName + Environment.NewLine);
+                                WriteErrorToLog($"{splitLine[4]} is outside the range of the Int64 type for {missionary.DisplayName + Environment.NewLine}");
                             }
                             catch (FormatException)
                             {
-                                WriteErrorToLog(splitLine[4] + "  is not in a recognizable latitude format for " + missionary.DisplayName + Environment.NewLine);
+                                WriteErrorToLog($"{splitLine[4]} is not in a recognizable latitude format for {missionary.DisplayName + Environment.NewLine}");
                             }
                             try
                             {
@@ -218,11 +218,11 @@ namespace mission_board
                             }
                             catch (OverflowException)
                             {
-                                WriteErrorToLog(splitLine[5] + " is outside the range of the Int64 type for " + missionary.DisplayName + Environment.NewLine);
+                                WriteErrorToLog($"{splitLine[5]} is outside the range of the Int64 type for {missionary.DisplayName + Environment.NewLine}");
                             }
                             catch (FormatException)
                             {
-                                WriteErrorToLog(splitLine[5] + "  is not in a recognizable longitude format for " + missionary.DisplayName + Environment.NewLine);
+                                WriteErrorToLog($"{splitLine[5]} is not in a recognizable longitude format for {missionary.DisplayName + Environment.NewLine}");
                             }
 
                             missionaryList.Add(splitLine[0], missionary);
@@ -233,27 +233,24 @@ namespace mission_board
             }
             catch (Exception)
             {
-                MessageBox.Show("Please make sure that " + csvFile + " is closed and not in use.");
-                WriteErrorToLog(csvFile + "  is open or in use."+ Environment.NewLine);
+                MessageBox.Show($"Please make sure that {csvFile} is closed and not in use.");
+                WriteErrorToLog($"{csvFile} is open or in use. {Environment.NewLine}");
                 return false;
-                
             }
             return true;
         }
 
         private void WriteErrorToLog(string error)
         {
-            String timeStamp = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + ":";
-            File.AppendAllText(_errorLogFileName, timeStamp + " " + error);
+            string timeStamp = $"{DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()} :";
+            File.AppendAllText(_errorLogFileName, $"{timeStamp} {error}");
         }
 
         private void LoadMissionaryLetters()
         {
-            string missionaryName = "";
+            string missionaryName = string.Empty;
 
-            missionaryLetters = new DirectoryInfo(Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + "\\Missionary_Letters").GetFiles()
-                                                  .OrderByDescending(f => f.LastAccessTime)
-                                                  .ToList();
+            missionaryLetters = new DirectoryInfo(_pdfLetterDirectory).GetFiles().OrderByDescending(x => x.LastAccessTime).ToList();
 
             ClearMissionaryLetters();
             foreach (FileInfo letter in missionaryLetters)
@@ -274,19 +271,16 @@ namespace mission_board
 
         private void PopulateRecentMissionaryLettersList()
         {
-            string[] files = System.IO.Directory.GetFiles(Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + "\\Missionary_Letters");
+            string[] files = Directory.GetFiles(_pdfLetterDirectory);
 
-            var sortedFiles = new DirectoryInfo(Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + "\\Missionary_Letters").GetFiles()
-                                                  .OrderByDescending(f => f.LastAccessTime)
-                                                  .ToList();
-            string missionaryName = string.Empty;
+            var sortedFiles = new DirectoryInfo(_pdfLetterDirectory).GetFiles().OrderByDescending(x => x.LastAccessTime).ToList();
             int month = 0, day = 0;
-            string monthString = string.Empty, dayString = string.Empty;
+            string missionaryName = string.Empty, monthString = string.Empty, dayString = string.Empty;
             recent_letter_listBox.Items.Clear();
 
             if (sortedFiles.Count < maxListLetters)
                 maxListLetters = sortedFiles.Count;
-            List<string> miss = new List<string>();
+            List<string> missionaries = new List<string>();
 
             foreach (FileInfo letter in sortedFiles)
             {
@@ -294,22 +288,16 @@ namespace mission_board
 
                 if (missionaryName != null)
                 {
-                    if (!miss.Contains(missionaryName))
+                    if (!missionaries.Contains(missionaryName))
                     {
-                        if (miss.Count < maxListLetters)
+                        if (missionaries.Count < maxListLetters)
                         {
                             month = letter.LastAccessTime.Month;
                             day = letter.LastAccessTime.Day;
-                            if (month < 10)
-                                monthString = "0" + month.ToString();
-                            else
-                                monthString = month.ToString();
-                            if (day < 10)
-                                dayString = "0" + day.ToString();
-                            else
-                                dayString = day.ToString();
-                            recent_letter_listBox.Items.Add((monthString + "/" + dayString + " - ").PadRight(8) + missionaryName);
-                            miss.Add(missionaryName);
+                            monthString = month.ToString("d2");
+                            dayString = day.ToString("d2");
+                            recent_letter_listBox.Items.Add(($"{monthString} / {dayString} - ").PadRight(8) + missionaryName);
+                            missionaries.Add(missionaryName);
                         }
                         else
                             break;
@@ -323,7 +311,7 @@ namespace mission_board
             missionary_letter_listBox.Items.Clear();
             foreach (FileInfo letter in missionaryList[name].Letters)
             {
-                missionary_letter_listBox.Items.Add(name + " - " + letter.LastAccessTime.Month + "/" + letter.LastAccessTime.Day);
+                missionary_letter_listBox.Items.Add($"{name} - {letter.LastAccessTime.Month} / {letter.LastAccessTime.Day}");
             }
         }
 
@@ -354,7 +342,7 @@ namespace mission_board
             // Sort alphabetically
             foreach (Missionary missionary in missionaryList.Values)
             {
-                missionaryList2.Add(missionary.LastName + "-" + missionary.FirstName, missionary.LastName + ", " + missionary.FirstName);
+                missionaryList2.Add($"{missionary.LastName} - {missionary.FirstName}", $"{ missionary.LastName}, { missionary.FirstName}");
             }
 
             foreach (string missionary in missionaryList2.Values)
@@ -383,7 +371,7 @@ namespace mission_board
 
                 int element_center_x = elementHost1.Width / 2;
                 int element_center_y = elementHost1.Height / 2;
-                infobox_panel.Location = new Point(element_center_x + elementHost1.Left, element_center_y + elementHost1.Top);//((int)(calculate_infobox_positionX(pin) - elementHost1.Location.X), (int)(calculate_infobox_positionY(pin) + elementHost1.Location.Y));
+                infobox_panel.Location = new Point(element_center_x + elementHost1.Left, element_center_y + elementHost1.Top);
                 infobox_panel.Visible = true;
                 infobox_panel.BringToFront();
                 moveTracker = 0;
@@ -417,10 +405,10 @@ namespace mission_board
             string missionaryName = LookupMissionaryListbox(name);
             selectedMissionary = missionaryName;
 
-            if (File.Exists("Profile_Pictures\\" + missionaryList[missionaryName].ProfilePicture))
+            if (File.Exists($"Profile_Pictures\\{missionaryList[missionaryName].ProfilePicture}"))
             {
                 profile_pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
-                profile_pictureBox.Image = System.Drawing.Image.FromFile("Profile_Pictures\\" + missionaryList[missionaryName].ProfilePicture);
+                profile_pictureBox.Image = Image.FromFile($"Profile_Pictures\\{missionaryList[missionaryName].ProfilePicture}");
             }
             else
                 profile_pictureBox.Image = null;
@@ -439,7 +427,6 @@ namespace mission_board
                 pictureBox1.Image = null;
             }
             PopulateIndividualMissionaryLetterList(missionaryName);
-
         }
 
         private void missionary_letter_listBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -502,14 +489,11 @@ namespace mission_board
 
         private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            SendEmail(keyboard1.Text, "parkviewmissions@gmail.com", "smtp.gmail.com", "Mission Board Letter", "", selectedLetter);
+            SendEmail(keyboard1.Text, _emailUsername, "smtp.gmail.com", "Mission Board Letter", string.Empty, selectedLetter);
         }
 
         public void SendEmail(string recipient, string sender, string smtp_server, string subject, string message, string attachment)
         {
-
-            /// TODO:
-            /// REMOVE HARD CODED CREDENTIALS AND MOVE TO APP.CONFIG
             try
             {
                 MailMessage mailMsg = new MailMessage();
@@ -533,9 +517,8 @@ namespace mission_board
             }
             catch (Exception e)
             {
-                File.AppendAllText("error.log", DateTime.Now.ToShortDateString() + " "
-                                            + DateTime.Now.ToShortTimeString() + " "
-                                            + e.Message + Environment.NewLine);
+                File.AppendAllText(_errorLogFileName,
+                    $"{DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()} {e.Message + Environment.NewLine}");
             }
 
         }
@@ -545,7 +528,7 @@ namespace mission_board
             /// TODO:
             /// VERY BAD - FIX THIS
             if (keyboard1.Text == "stark9355")
-                Form1.ActiveForm.Dispose();
+                ActiveForm.Dispose();
             keyboard1.Visible = false;
 
             if (backgroundWorker1.IsBusy != true)
@@ -614,7 +597,7 @@ namespace mission_board
         private void Form1_Load(object sender, EventArgs e)
         {
             if (closeForm)
-                Form1.ActiveForm.Dispose();
+                ActiveForm.Dispose();
         }
     }
 }
