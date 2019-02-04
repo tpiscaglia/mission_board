@@ -14,23 +14,23 @@ namespace mission_board
 {
     public partial class Form1 : Form
     {
-        public const string missionary_data_file_name = "missionary_data.csv";
-        public const string error_log_file_name = "error.log";
-        public List<FileInfo> missionary_letters;
-        public string selected_letter;
-        public string selected_missionary;
-        public int max_list_letters = 20;
+        public const string MISSIONARY_DATA_FILE_NAME = "missionary_data.csv";
+        public const string ERROR_LOG_FILE_NAME = "error.log";
+        public List<FileInfo> missionaryLetters;
+        public string selectedLetter;
+        public string selectedMissionary;
+        public int maxListLetters = 20;
 
-        public int move_tracker = 0;
-        public string selected_pushpin_name = "";
+        public int moveTracker = 0;
+        public string selectedPushpinName = "";
 
-        public string pdf_letter_directory = Directory.GetCurrentDirectory() + "\\Missionary_Letters";
-        public string jpg_letter_directory = Directory.GetCurrentDirectory() + "\\Missionary_Letters\\jpg\\";
-        public float letter_dpi = 500;
+        public string pdfLetterDirectory = Directory.GetCurrentDirectory() + "\\Missionary_Letters";
+        public string jpgLetterDirectory = Directory.GetCurrentDirectory() + "\\Missionary_Letters\\jpg\\";
+        public float letterDpi = 500f;
 
-        public SortedList<string, Missionary> missionary_list = new SortedList<string, Missionary>();
+        public SortedList<string, Missionary> missionaryList = new SortedList<string, Missionary>();
 
-        public bool close_form = false;
+        public bool closeForm = false;
 
         public Form1()
         {
@@ -40,46 +40,47 @@ namespace mission_board
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
             //Set Credentials for map
+            /// TODO:
+            /// REFACTOR TO STORE KEY IN APP.CONFIG FILE AND RETRIEVE IT FROM THERE
             mapUserControl1.Map.CredentialsProvider = new ApplicationIdCredentialsProvider("AonE3CQFKLAwXl7gB7sO4OJBc_ENtyOHzuE4JfycY_EPzNlqlGEnuL1vUeo8Tl8d");
             mapUserControl1.Map.AnimationLevel = AnimationLevel.None;
             mapUserControl1.Map.SupportedManipulations = System.Windows.Input.Manipulations.Manipulations2D.Scale | System.Windows.Input.Manipulations.Manipulations2D.Translate;
             mapUserControl1.Map.ZoomLevel = 3;
             mapUserControl1.Map.TargetViewChanged += Map_TargetViewChanged;
             mapUserControl1.Map.ViewChangeOnFrame += Map_ViewChangeOnFrame;
-            show_map(true);
+            ShowMap(true);
 
             keyboard1.Location = new Point(500, 700);
 
-            if (!load_missionary_data(missionary_data_file_name))
+            if (!LoadMissionaryData(MISSIONARY_DATA_FILE_NAME))
             {
-                close_form = true;
+                closeForm = true;
             }
-            load_map_markers();
-            load_missionary_letters();
-            populate_recent_missionary_letters_list();
-            load_missionary_list();
-
+            LoadMapMarkers();
+            LoadMissionaryLetters();
+            PopulateRecentMissionaryLettersList();
+            LoadMissionaryList();
         }
 
-        public List<string> get_letter_pages(string pdf)
+        public List<string> GetLetterPages(string pdf)
         {
-            string pdf_file_loc;
-            List<string> letter_pages = new List<string>();
+            string pdfFileLocation;
+            List<string> letterPages = new List<string>();
             try
             {
                 using (var document = PdfiumViewer.PdfDocument.Load(pdf))
                 {
                     for (int index = 0; index < document.PageCount; index++)
                     {
-                        pdf_file_loc = jpg_letter_directory + pdf.Substring(pdf.LastIndexOf("\\") + 1) + index.ToString() + ".jpg";
-                        if (File.Exists(pdf_file_loc))
-                            letter_pages.Add(pdf_file_loc);
+                        pdfFileLocation = jpgLetterDirectory + pdf.Substring(pdf.LastIndexOf("\\") + 1) + index.ToString() + ".jpg";
+                        if (File.Exists(pdfFileLocation))
+                            letterPages.Add(pdfFileLocation);
                         else
                         {
                             // Coverts pdf to jpeg. I thank the Lord for this render method. It's fast and blessed
-                            var image = document.Render(index, letter_dpi, letter_dpi, PdfiumViewer.PdfRenderFlags.LcdText);
-                            image.Save(pdf_file_loc, ImageFormat.Jpeg);
-                            letter_pages.Add(pdf_file_loc);
+                            Image image = document.Render(index, letterDpi, letterDpi, PdfiumViewer.PdfRenderFlags.LcdText);
+                            image.Save(pdfFileLocation, ImageFormat.Jpeg);
+                            letterPages.Add(pdfFileLocation);
                         }
                     }
                 }
@@ -89,13 +90,12 @@ namespace mission_board
                 MessageBox.Show(ex.ToString());
                 // handle exception here;
             }
-            return letter_pages;
-
+            return letterPages;
         }
 
-        private void show_map(bool show_map)
+        private void ShowMap(bool showMap)
         {
-            if (show_map)
+            if (showMap)
             {
                 panel1.Visible = false;
                 infobox_panel.Visible = false;
@@ -116,11 +116,11 @@ namespace mission_board
         {
             if (infobox_panel.Visible)
             {
-                move_tracker += 1;
-                if (move_tracker > 3)
+                moveTracker += 1;
+                if (moveTracker > 3)
                 {
                     infobox_panel.Visible = false;
-                    move_tracker = 0;
+                    moveTracker = 0;
                 }
             }
         }
@@ -134,9 +134,9 @@ namespace mission_board
 
         }
 
-        private void load_map_markers()
+        private void LoadMapMarkers()
         {
-            foreach (Missionary miss in missionary_list.Values)
+            foreach (Missionary miss in missionaryList.Values)
             {
                 Pushpin pushpin = new Pushpin();
                 pushpin.Location = new Location(miss.Latitude, miss.Longitude);
@@ -159,71 +159,73 @@ namespace mission_board
             infobox_panel.Location = new Point(coordinates.X, coordinates.Y);//((int)(calculate_infobox_positionX(pin) - elementHost1.Location.X), (int)(calculate_infobox_positionY(pin) + elementHost1.Location.Y));
             infobox_panel.Visible = true;
             infobox_panel.BringToFront();
-            move_tracker = 0;
+            moveTracker = 0;
             inforbox_name_label.Text = missionary_name;
-            field_label.Text = missionary_list[missionary_name].MissionField;
-            selected_pushpin_name = pin.Name;
+            field_label.Text = missionaryList[missionary_name].MissionField;
+            selectedPushpinName = pin.Name;
         }
 
-        private bool load_missionary_data(string csv_file)
+        private bool LoadMissionaryData(string csvFile)
         {
-            int valid_column_count = 9;
+            /// TODO:
+            /// REFACTOR THIS METHOD
+            int validColumnCount = 9;
 
-            if (!File.Exists(csv_file))
+            if (!File.Exists(csvFile))
             {
-                write_error_log("FATAL ERROR: " + csv_file + " is either missing or corrupted." + Environment.NewLine);
+                WriteErrorToLog("FATAL ERROR: " + csvFile + " is either missing or corrupted." + Environment.NewLine);
                 return false;
             }
             try
             {
-                string[] missionary_data_rows = File.ReadAllLines(csv_file);
-                string[] split_line;
-                Missionary missionary_obj;
-                foreach (string line in missionary_data_rows)
+                string[] missionaryDataRows = File.ReadAllLines(csvFile);
+                string[] splitLine;
+                Missionary missionary;
+                foreach (string line in missionaryDataRows)
                 {
                     if (!line.Contains("Display_Name")) // skip first line, I don't like doing it this way, shameful
                     {
                         // [0]          [1]             [2]         [3]         [4]         [5]         [6]     [7]
                         // Display_Name	Mission_Field	First_Name	Last_Name	Latitude	Longitude	Email	Profile_Picture
 
-                        split_line = line.Split(",".ToCharArray());
-                        missionary_obj = new Missionary();
+                        splitLine = line.Split(",".ToCharArray());
+                        missionary = new Missionary();
 
-                        if (split_line.Length == valid_column_count) // so we don't go out of bounds on the array
+                        if (splitLine.Length == validColumnCount) // so we don't go out of bounds on the array
                         {
-                            missionary_obj.DisplayName = split_line[0].Trim();
-                            missionary_obj.MissionField = split_line[1].Trim();
-                            missionary_obj.FirstName = split_line[2].Trim();
-                            missionary_obj.LastName = split_line[3].Trim();
-                            missionary_obj.Email = split_line[6].Trim();
-                            missionary_obj.ProfilePicture = split_line[7].Trim();
-                            missionary_obj.LetterAlias = split_line[8].Trim();
+                            missionary.DisplayName = splitLine[0].Trim();
+                            missionary.MissionField = splitLine[1].Trim();
+                            missionary.FirstName = splitLine[2].Trim();
+                            missionary.LastName = splitLine[3].Trim();
+                            missionary.Email = splitLine[6].Trim();
+                            missionary.ProfilePicture = splitLine[7].Trim();
+                            missionary.LetterAlias = splitLine[8].Trim();
                             try
                             {
-                                missionary_obj.Latitude = Convert.ToDouble(split_line[4]);
+                                missionary.Latitude = Convert.ToDouble(splitLine[4]);
                             }
                             catch (OverflowException)
                             {
-                                write_error_log(split_line[4] + " is outside the range of the Int64 type for " + missionary_obj.DisplayName + Environment.NewLine);
+                                WriteErrorToLog(splitLine[4] + " is outside the range of the Int64 type for " + missionary.DisplayName + Environment.NewLine);
                             }
                             catch (FormatException)
                             {
-                                write_error_log(split_line[4] + "  is not in a recognizable latitude format for " + missionary_obj.DisplayName + Environment.NewLine);
+                                WriteErrorToLog(splitLine[4] + "  is not in a recognizable latitude format for " + missionary.DisplayName + Environment.NewLine);
                             }
                             try
                             {
-                                missionary_obj.Longitude = Convert.ToDouble(split_line[5]);
+                                missionary.Longitude = Convert.ToDouble(splitLine[5]);
                             }
                             catch (OverflowException)
                             {
-                                write_error_log(split_line[5] + " is outside the range of the Int64 type for " + missionary_obj.DisplayName + Environment.NewLine);
+                                WriteErrorToLog(splitLine[5] + " is outside the range of the Int64 type for " + missionary.DisplayName + Environment.NewLine);
                             }
                             catch (FormatException)
                             {
-                                write_error_log(split_line[5] + "  is not in a recognizable longitude format for " + missionary_obj.DisplayName + Environment.NewLine);
+                                WriteErrorToLog(splitLine[5] + "  is not in a recognizable longitude format for " + missionary.DisplayName + Environment.NewLine);
                             }
 
-                            missionary_list.Add(split_line[0], missionary_obj);
+                            missionaryList.Add(splitLine[0], missionary);
                         }
                     }
 
@@ -231,37 +233,37 @@ namespace mission_board
             }
             catch (Exception)
             {
-                MessageBox.Show("Please make sure that " + csv_file + " is closed and not in use.");
-                write_error_log(csv_file + "  is open or in use."+ Environment.NewLine);
+                MessageBox.Show("Please make sure that " + csvFile + " is closed and not in use.");
+                WriteErrorToLog(csvFile + "  is open or in use."+ Environment.NewLine);
                 return false;
                 
             }
             return true;
         }
 
-        private void write_error_log(string error_string)
+        private void WriteErrorToLog(string error)
         {
             String timeStamp = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + ":";
-            File.AppendAllText(error_log_file_name, timeStamp + " " + error_string);
+            File.AppendAllText(ERROR_LOG_FILE_NAME, timeStamp + " " + error);
         }
 
-        private void load_missionary_letters()
+        private void LoadMissionaryLetters()
         {
-            string missionary_name = "";
+            string missionaryName = "";
 
-            missionary_letters = new DirectoryInfo(Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + "\\Missionary_Letters").GetFiles()
+            missionaryLetters = new DirectoryInfo(Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + "\\Missionary_Letters").GetFiles()
                                                   .OrderByDescending(f => f.LastAccessTime)
                                                   .ToList();
 
-            clear_missionary_letters();
-            foreach (FileInfo letter in missionary_letters)
+            ClearMissionaryLetters();
+            foreach (FileInfo letter in missionaryLetters)
             {
-                missionary_name = lookup_letter_ownership(letter.Name);
+                missionaryName = LookupLetterOwnership(letter.Name);
 
-                if (missionary_name != null)
+                if (missionaryName != null)
                 {
-                    if (!missionary_list[missionary_name].Letters.Contains(letter))
-                        missionary_list[missionary_name].Letters.Add(letter);
+                    if (!missionaryList[missionaryName].Letters.Contains(letter))
+                        missionaryList[missionaryName].Letters.Add(letter);
                 }
                 else
                 {
@@ -270,46 +272,45 @@ namespace mission_board
             }
         }
 
-        private void populate_recent_missionary_letters_list()
+        private void PopulateRecentMissionaryLettersList()
         {
             string[] files = System.IO.Directory.GetFiles(Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + "\\Missionary_Letters");
 
             var sortedFiles = new DirectoryInfo(Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + "\\Missionary_Letters").GetFiles()
                                                   .OrderByDescending(f => f.LastAccessTime)
                                                   .ToList();
-            string missionary_name = "";
-            int month = 0;
-            string month_str = "",day_str = "";
-            int day = 0;
+            string missionaryName = string.Empty;
+            int month = 0, day = 0;
+            string monthString = string.Empty, dayString = string.Empty;
             //recent_letter_listView1.Items.Clear();
             recent_letter_listBox.Items.Clear();
 
-            if (sortedFiles.Count < max_list_letters)
-                max_list_letters = sortedFiles.Count;
+            if (sortedFiles.Count < maxListLetters)
+                maxListLetters = sortedFiles.Count;
             List<string> miss = new List<string>();
 
             foreach (FileInfo letter in sortedFiles)
             {
-                missionary_name = lookup_letter_ownership(letter.Name);
+                missionaryName = LookupLetterOwnership(letter.Name);
 
-                if (missionary_name != null)
+                if (missionaryName != null)
                 {
-                    if (!miss.Contains(missionary_name))
+                    if (!miss.Contains(missionaryName))
                     {
-                        if (miss.Count < max_list_letters)
+                        if (miss.Count < maxListLetters)
                         {
                             month = letter.LastAccessTime.Month;
                             day = letter.LastAccessTime.Day;
                             if (month < 10)
-                                month_str = "0" + month.ToString();
+                                monthString = "0" + month.ToString();
                             else
-                                month_str = month.ToString();
+                                monthString = month.ToString();
                             if (day < 10)
-                                day_str = "0" + day.ToString();
+                                dayString = "0" + day.ToString();
                             else
-                                day_str = day.ToString();
-                            recent_letter_listBox.Items.Add((month_str + "/" + day_str + " - ").PadRight(8) + missionary_name);
-                            miss.Add(missionary_name);
+                                dayString = day.ToString();
+                            recent_letter_listBox.Items.Add((monthString + "/" + dayString + " - ").PadRight(8) + missionaryName);
+                            miss.Add(missionaryName);
                         }
                         else
                             break;
@@ -322,126 +323,125 @@ namespace mission_board
             }
         }
 
-        private void populate_individual_missionary_letter_list(string name)
+        private void PopulateIndividualMissionaryLetterList(string name)
         {
             missionary_letter_listBox.Items.Clear();
-            foreach (FileInfo letter in missionary_list[name].Letters)
+            foreach (FileInfo letter in missionaryList[name].Letters)
             {
                 missionary_letter_listBox.Items.Add(name + " - " + letter.LastAccessTime.Month + "/" + letter.LastAccessTime.Day);
             }
         }
 
         // Critical method for associating a letter with the missionary
-        private string lookup_letter_ownership(string letter_name)
+        private string LookupLetterOwnership(string letterName)
         {
-            string missionary_name = null;
-            letter_name = letter_name.ToLower();
+            string missionaryName = null;
+            letterName = letterName.ToLower();
 
-            foreach (Missionary miss in missionary_list.Values)
+            foreach (Missionary missionary in missionaryList.Values)
             {
                 // This alias has to be in the letter name!!! Make sure it's unique!!
-                if (letter_name.Contains(miss.LetterAlias.ToLower()))
+                if (letterName.Contains(missionary.LetterAlias.ToLower()))
                 { 
-                    missionary_name = miss.DisplayName;
+                    missionaryName = missionary.DisplayName;
                     break;
                 }
-
             }
-            return missionary_name;
+            return missionaryName;
         }
 
-        private void load_missionary_list()
+        private void LoadMissionaryList()
         {
-            SortedList<string, string> missionary_list2 = new SortedList<string, string>();
+            /// TODO:
+            /// I BELIEVE THIS CAN BE DONE EASIER WITH LINQ
+            SortedList<string, string> missionaryList2 = new SortedList<string, string>();
 
             // Sort alphabetically
-            foreach (Missionary miss in missionary_list.Values)
+            foreach (Missionary missionary in missionaryList.Values)
             {
-                missionary_list2.Add(miss.LastName + "-" + miss.FirstName, miss.LastName + ", " + miss.FirstName);
+                missionaryList2.Add(missionary.LastName + "-" + missionary.FirstName, missionary.LastName + ", " + missionary.FirstName);
             }
 
-            foreach (string miss in missionary_list2.Values)
+            foreach (string missionary in missionaryList2.Values)
             {
-                missionary_listBox.Items.Add(miss);
+                missionary_listBox.Items.Add(missionary);
             }
         }
 
-        private void clear_missionary_letters()
+        private void ClearMissionaryLetters()
         {
-            foreach (Missionary miss in missionary_list.Values)
-                miss.Letters.Clear();
+            foreach (Missionary missionary in missionaryList.Values)
+                missionary.Letters.Clear();
         }
 
         private void missionary_listBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (missionary_listBox.SelectedIndex >= 0)
             {
-                show_map(true);
+                ShowMap(true);
                 infobox_panel.Visible = false;
                 string name = missionary_listBox.Items[missionary_listBox.SelectedIndex].ToString();
-                string missionary_name = lookup_missionary_listbox(name);
+                string missionary_name = LookupMissionaryListbox(name);
                 // mapUserControl1.Map.Center.Latitude = missionary_list[missionary_name].Latitude;
                 // mapUserControl1.Map.Center.Longitude = missionary_list[missionary_name].Longitude;
-                Location center_map = new Location(missionary_list[missionary_name].Latitude,
-                                                   missionary_list[missionary_name].Longitude);
-                mapUserControl1.Map.SetView(center_map, 5);
+                Location mapCenter = new Location(missionaryList[missionary_name].Latitude,
+                                                   missionaryList[missionary_name].Longitude);
+                mapUserControl1.Map.SetView(mapCenter, 5);
 
                 int element_center_x = elementHost1.Width / 2;
                 int element_center_y = elementHost1.Height / 2;
                 infobox_panel.Location = new Point(element_center_x + elementHost1.Left, element_center_y + elementHost1.Top);//((int)(calculate_infobox_positionX(pin) - elementHost1.Location.X), (int)(calculate_infobox_positionY(pin) + elementHost1.Location.Y));
                 infobox_panel.Visible = true;
                 infobox_panel.BringToFront();
-                move_tracker = 0;
+                moveTracker = 0;
                 inforbox_name_label.Text = missionary_name;
-                field_label.Text = missionary_list[missionary_name].MissionField;
-                selected_pushpin_name = name;
+                field_label.Text = missionaryList[missionary_name].MissionField;
+                selectedPushpinName = name;
                 //update_profile(name, null);
-
             }
         }
 
         // Critical method for associating a letter with the missionary
-        private string lookup_missionary_listbox(string name)
+        private string LookupMissionaryListbox(string name)
         {
-            string missionary_name = null;
+            string missionaryName = null;
             name = name.ToLower();
 
-            foreach (Missionary miss in missionary_list.Values)
+            foreach (Missionary missionary in missionaryList.Values)
             {
-                
-                if (name.Contains(miss.LetterAlias.ToLower()) ||
-                    (name.Contains(miss.FirstName.ToLower()) && name.Contains(miss.LastName.ToLower())))
+                if (name.Contains(missionary.LetterAlias.ToLower()) ||
+                    (name.Contains(missionary.FirstName.ToLower()) && name.Contains(missionary.LastName.ToLower())))
                 {
-                    missionary_name = miss.DisplayName;
+                    missionaryName = missionary.DisplayName;
                     break;
                 }
-
             }
-            return missionary_name;
+            return missionaryName;
         }
 
-        private void update_profile(string name)
+        private void UpdateProfile(string name)
         {
-            show_map(false);
+            ShowMap(false);
             keyboard1.Visible = false;
-            string missionary_name = lookup_missionary_listbox(name);
-            selected_missionary = missionary_name;
+            string missionaryName = LookupMissionaryListbox(name);
+            selectedMissionary = missionaryName;
 
-            if (File.Exists("Profile_Pictures\\" + missionary_list[missionary_name].ProfilePicture))
+            if (File.Exists("Profile_Pictures\\" + missionaryList[missionaryName].ProfilePicture))
             {
                 profile_pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
-                profile_pictureBox.Image = System.Drawing.Image.FromFile("Profile_Pictures\\" + missionary_list[missionary_name].ProfilePicture);
+                profile_pictureBox.Image = System.Drawing.Image.FromFile("Profile_Pictures\\" + missionaryList[missionaryName].ProfilePicture);
             }
             else
                 profile_pictureBox.Image = null;
-            name_label.Text = missionary_name;
-            mission_field_label.Text = missionary_list[missionary_name].MissionField;
 
-            if (missionary_list[missionary_name].Letters.Count > 0)
+            name_label.Text = missionaryName;
+            mission_field_label.Text = missionaryList[missionaryName].MissionField;
+
+            if (missionaryList[missionaryName].Letters.Count > 0)
             {
-                selected_letter = missionary_list[missionary_name].Letters[0].FullName;
+                selectedLetter = missionaryList[missionaryName].Letters[0].FullName;
                 //pdfDocumentViewer1.LoadFromFile(missionary_list[missionary_name].Letters[0].FullName); // not good, you should pass a index or lookup the selected letter. don't asume!!!!!!
-                pictureBox1.Image = Image.FromFile(get_letter_pages(missionary_list[missionary_name].Letters[0].FullName)[0]);
+                pictureBox1.Image = Image.FromFile(GetLetterPages(missionaryList[missionaryName].Letters[0].FullName)[0]);
 
             }
             else
@@ -450,7 +450,7 @@ namespace mission_board
                 // pdfDocumentViewer1.LoadFromFile("No Letter Present.pdf");
                 // Nothing to load
             }
-            populate_individual_missionary_letter_list(missionary_name);
+            PopulateIndividualMissionaryLetterList(missionaryName);
 
         }
 
@@ -460,16 +460,16 @@ namespace mission_board
             {
                 string missionary_name = missionary_letter_listBox.Items[missionary_letter_listBox.SelectedIndex].ToString();
 
-                missionary_name = lookup_missionary_listbox(missionary_name);
+                missionary_name = LookupMissionaryListbox(missionary_name);
 
-                if (!missionary_list.ContainsKey(missionary_name))
+                if (!missionaryList.ContainsKey(missionary_name))
                     missionary_name = null;
 
                 if (missionary_name != null)
                 {
-                    selected_letter = missionary_list[missionary_name].Letters[missionary_letter_listBox.SelectedIndex].FullName;
+                    selectedLetter = missionaryList[missionary_name].Letters[missionary_letter_listBox.SelectedIndex].FullName;
                     //  pdfDocumentViewer1.LoadFromFile(missionary_list[missionary_name].Letters[missionary_letter_listBox.SelectedIndex].FullName);
-                    pictureBox1.Image = Image.FromFile(get_letter_pages(selected_letter)[0]);
+                    pictureBox1.Image = Image.FromFile(GetLetterPages(selectedLetter)[0]);
 
                 }
                 else
@@ -482,7 +482,7 @@ namespace mission_board
         //private void load_picture_box
         private void home_button_Click(object sender, EventArgs e)
         {
-            show_map(true);
+            ShowMap(true);
         }
 
         private void close_button_Click(object sender, EventArgs e)
@@ -509,9 +509,9 @@ namespace mission_board
         private void view_profile_button_Click(object sender, EventArgs e)
         {
             //MessageBox.Show(selected_pushpin_name);
-            show_map(false);
+            ShowMap(false);
             //infobox_panel.Visible = false;
-            update_profile(selected_pushpin_name);
+            UpdateProfile(selectedPushpinName);
         }
 
         private void send_mail_Click(object sender, EventArgs e)
@@ -523,10 +523,10 @@ namespace mission_board
 
         private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            send_email(keyboard1.Text, "parkviewmissions@gmail.com", "smtp.gmail.com", "Mission Board Letter", "", selected_letter);
+            SendEmail(keyboard1.Text, "parkviewmissions@gmail.com", "smtp.gmail.com", "Mission Board Letter", "", selectedLetter);
         }
 
-        public void send_email(string recipient, string sender, string smtp_server, string subject, string message, string attachment)
+        public void SendEmail(string recipient, string sender, string smtp_server, string subject, string message, string attachment)
         {
             try
             {
@@ -573,13 +573,13 @@ namespace mission_board
 
         private void back_to_map_button_Click(object sender, EventArgs e)
         {
-            show_map(true);
+            ShowMap(true);
             infobox_panel.Visible = false;
-            string missionary_name = selected_missionary;
+            string missionary_name = selectedMissionary;
             // mapUserControl1.Map.Center.Latitude = missionary_list[missionary_name].Latitude;
             // mapUserControl1.Map.Center.Longitude = missionary_list[missionary_name].Longitude;
-            Location center_map = new Location(missionary_list[missionary_name].Latitude,
-                                               missionary_list[missionary_name].Longitude);
+            Location center_map = new Location(missionaryList[missionary_name].Latitude,
+                                               missionaryList[missionary_name].Longitude);
             mapUserControl1.Map.SetView(center_map, 5);
 
             int element_center_x = elementHost1.Width / 2;
@@ -587,10 +587,10 @@ namespace mission_board
             infobox_panel.Location = new Point(element_center_x + elementHost1.Left, element_center_y + elementHost1.Top);//((int)(calculate_infobox_positionX(pin) - elementHost1.Location.X), (int)(calculate_infobox_positionY(pin) + elementHost1.Location.Y));
             infobox_panel.Visible = true;
             infobox_panel.BringToFront();
-            move_tracker = 0;
+            moveTracker = 0;
             inforbox_name_label.Text = missionary_name;
-            field_label.Text = missionary_list[missionary_name].MissionField;
-            selected_pushpin_name = missionary_name;
+            field_label.Text = missionaryList[missionary_name].MissionField;
+            selectedPushpinName = missionary_name;
             //update_profile(name, null);
 
 
@@ -618,14 +618,14 @@ namespace mission_board
                 string missionary_letter = recent_letter_listBox.Items[recent_letter_listBox.SelectedIndex].ToString();
                 missionary_letter = missionary_letter.Substring(8).Trim();
 
-                if (missionary_list.ContainsKey(missionary_letter))
-                    missionary_letter = missionary_list[missionary_letter].LetterAlias;
+                if (missionaryList.ContainsKey(missionary_letter))
+                    missionary_letter = missionaryList[missionary_letter].LetterAlias;
                 else
                     missionary_letter = null;
 
                 if (missionary_letter != null)
                 {
-                    update_profile(missionary_letter); // pass the proper parameter!!!! not null!!
+                    UpdateProfile(missionary_letter); // pass the proper parameter!!!! not null!!
                 }
                 else
                 {
@@ -641,7 +641,7 @@ namespace mission_board
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            if (close_form)
+            if (closeForm)
                 Form1.ActiveForm.Dispose();
         }
     }
