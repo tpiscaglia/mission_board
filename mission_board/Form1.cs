@@ -9,40 +9,45 @@ using System.Drawing;
 using System.Net.Mail;
 using System.Net;
 using System.Drawing.Imaging;
+using System.Configuration;
 
 namespace mission_board
 {
     public partial class Form1 : Form
     {
-        public const string MISSIONARY_DATA_FILE_NAME = "missionary_data.csv";
-        public const string ERROR_LOG_FILE_NAME = "error.log";
-        public List<FileInfo> missionaryLetters;
-        public string selectedLetter;
-        public string selectedMissionary;
-        public int maxListLetters = 20;
-
-        public int moveTracker = 0;
-        public string selectedPushpinName = "";
-
-        public string pdfLetterDirectory = Directory.GetCurrentDirectory() + "\\Missionary_Letters";
-        public string jpgLetterDirectory = Directory.GetCurrentDirectory() + "\\Missionary_Letters\\jpg\\";
-        public float letterDpi = 500f;
-
-        public SortedList<string, Missionary> missionaryList = new SortedList<string, Missionary>();
-
-        public bool closeForm = false;
+        private readonly string _missionaryDataFileName;
+        private readonly string _errorLogFileName;
+        private readonly string _pdfLetterDirectory;
+        private readonly string _jpgLetterDirectory;
+        private readonly string _bingApiKey;
+        private readonly string _emailUsername;
+        private readonly string _emailPassword;
+        private List<FileInfo> missionaryLetters;
+        private string selectedLetter;
+        private string selectedMissionary;
+        private int maxListLetters = 20;
+        private int moveTracker = 0;
+        private string selectedPushpinName = string.Empty;
+        private float letterDpi = 500f;
+        private bool closeForm = false;
+        private SortedList<string, Missionary> missionaryList = new SortedList<string, Missionary>();
 
         public Form1()
         {
             InitializeComponent();
 
+            _missionaryDataFileName = Properties.Settings.Default.DataFileLocation;
+            _errorLogFileName = Properties.Settings.Default.ErrorLogFileLocation;
+            _pdfLetterDirectory = Properties.Settings.Default.PdfLetterDirectory;
+            _jpgLetterDirectory = Properties.Settings.Default.JpgLetterDirectory;
+            _bingApiKey = ConfigurationManager.AppSettings.Get("BingApiKey");
+            _emailUsername = ConfigurationManager.AppSettings.Get("EmailUsername");
+            _emailPassword = ConfigurationManager.AppSettings.Get("EmailPassword");
+
             pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
-            //Set Credentials for map
-            /// TODO:
-            /// REFACTOR TO STORE KEY IN APP.CONFIG FILE AND RETRIEVE IT FROM THERE
-            mapUserControl1.Map.CredentialsProvider = new ApplicationIdCredentialsProvider("AonE3CQFKLAwXl7gB7sO4OJBc_ENtyOHzuE4JfycY_EPzNlqlGEnuL1vUeo8Tl8d");
+            mapUserControl1.Map.CredentialsProvider = new ApplicationIdCredentialsProvider(_bingApiKey);
             mapUserControl1.Map.AnimationLevel = AnimationLevel.None;
             mapUserControl1.Map.SupportedManipulations = System.Windows.Input.Manipulations.Manipulations2D.Scale | System.Windows.Input.Manipulations.Manipulations2D.Translate;
             mapUserControl1.Map.ZoomLevel = 3;
@@ -52,7 +57,7 @@ namespace mission_board
 
             keyboard1.Location = new Point(500, 700);
 
-            if (!LoadMissionaryData(MISSIONARY_DATA_FILE_NAME))
+            if (!LoadMissionaryData(_missionaryDataFileName))
             {
                 closeForm = true;
             }
@@ -72,7 +77,7 @@ namespace mission_board
                 {
                     for (int index = 0; index < document.PageCount; index++)
                     {
-                        pdfFileLocation = jpgLetterDirectory + pdf.Substring(pdf.LastIndexOf("\\") + 1) + index.ToString() + ".jpg";
+                        pdfFileLocation = _jpgLetterDirectory + pdf.Substring(pdf.LastIndexOf("\\") + 1) + index.ToString() + ".jpg";
                         if (File.Exists(pdfFileLocation))
                             letterPages.Add(pdfFileLocation);
                         else
@@ -88,7 +93,7 @@ namespace mission_board
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
-                // handle exception here;
+                WriteErrorToLog(ex.Message);
             }
             return letterPages;
         }
@@ -129,7 +134,6 @@ namespace mission_board
                 mapUserControl1.Map.ZoomLevel = 15;
             if (mapUserControl1.Map.ZoomLevel < 3)
                 mapUserControl1.Map.ZoomLevel = 3;
-
         }
 
         private void LoadMapMarkers()
@@ -240,7 +244,7 @@ namespace mission_board
         private void WriteErrorToLog(string error)
         {
             String timeStamp = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + ":";
-            File.AppendAllText(ERROR_LOG_FILE_NAME, timeStamp + " " + error);
+            File.AppendAllText(_errorLogFileName, timeStamp + " " + error);
         }
 
         private void LoadMissionaryLetters()
@@ -524,7 +528,7 @@ namespace mission_board
                 smtpClient.EnableSsl = true;
                 smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
                 smtpClient.UseDefaultCredentials = false;
-                smtpClient.Credentials = new NetworkCredential("parkviewmissions@gmail.com", "stark9355");
+                smtpClient.Credentials = new NetworkCredential(_emailUsername, _emailPassword);
                 smtpClient.Send(mailMsg);
             }
             catch (Exception e)
@@ -559,7 +563,7 @@ namespace mission_board
 
             int element_center_x = elementHost1.Width / 2;
             int element_center_y = elementHost1.Height / 2;
-            infobox_panel.Location = new Point(element_center_x + elementHost1.Left, element_center_y + elementHost1.Top);//((int)(calculate_infobox_positionX(pin) - elementHost1.Location.X), (int)(calculate_infobox_positionY(pin) + elementHost1.Location.Y));
+            infobox_panel.Location = new Point(element_center_x + elementHost1.Left, element_center_y + elementHost1.Top);
             infobox_panel.Visible = true;
             infobox_panel.BringToFront();
             moveTracker = 0;

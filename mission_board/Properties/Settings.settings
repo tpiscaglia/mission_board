@@ -1,7 +1,18 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="mission_board.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="DataFileLocation" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">missionary_data.csv</Value>
+    </Setting>
+    <Setting Name="ErrorLogFileLocation" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">error_log.txt</Value>
+    </Setting>
+    <Setting Name="PdfLetterDirectory" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">\\MissionaryLetters</Value>
+    </Setting>
+    <Setting Name="JpgLetterDirectory" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">\\MissionaryLetters\JPG</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>
