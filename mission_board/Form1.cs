@@ -36,10 +36,10 @@ namespace mission_board
         {
             InitializeComponent();
 
-            _missionaryDataFileName = Properties.Settings.Default.DataFileLocation;
+            _missionaryDataFileName = AppDomain.CurrentDomain.BaseDirectory + Properties.Settings.Default.DataFileLocation;
             _errorLogFileName = Properties.Settings.Default.ErrorLogFileLocation;
-            _pdfLetterDirectory = Properties.Settings.Default.PdfLetterDirectory;
-            _jpgLetterDirectory = Properties.Settings.Default.JpgLetterDirectory;
+            _pdfLetterDirectory = AppDomain.CurrentDomain.BaseDirectory + Properties.Settings.Default.PdfLetterDirectory;
+            _jpgLetterDirectory = AppDomain.CurrentDomain.BaseDirectory + Properties.Settings.Default.JpgLetterDirectory;
             _bingApiKey = ConfigurationManager.AppSettings.Get("BingApiKey");
             _emailUsername = ConfigurationManager.AppSettings.Get("EmailUsername");
             _emailPassword = ConfigurationManager.AppSettings.Get("EmailPassword");

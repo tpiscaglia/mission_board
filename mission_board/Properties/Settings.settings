@@ -9,10 +9,10 @@
       <Value Profile="(Default)">error_log.txt</Value>
     </Setting>
     <Setting Name="PdfLetterDirectory" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">\\MissionaryLetters</Value>
+      <Value Profile="(Default)">\Missionary_Letters\</Value>
     </Setting>
     <Setting Name="JpgLetterDirectory" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">\\MissionaryLetters\JPG</Value>
+      <Value Profile="(Default)">\Missionary_Letters\JPG\</Value>
     </Setting>
   </Settings>
 </SettingsFile>
