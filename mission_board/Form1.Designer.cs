@@ -258,7 +258,6 @@
             // infobox_panel
             // 
             this.infobox_panel.BackColor = System.Drawing.Color.LightGray;
-            this.infobox_panel.BackgroundImage = global::mission_board.Properties.Resources.old_brown_paper_texture;
             this.infobox_panel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.infobox_panel.Controls.Add(this.field_label);
             this.infobox_panel.Controls.Add(this.view_profile_button);
@@ -323,7 +322,6 @@
             // 
             // home_button
             // 
-            this.home_button.BackgroundImage = global::mission_board.Properties.Resources.globe;
             this.home_button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.home_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.home_button.Location = new System.Drawing.Point(50, 4);
