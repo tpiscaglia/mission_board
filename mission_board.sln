@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mission_board", "mission_bo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{86536EEA-08A3-420E-9A9B-E896EB1ED721}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mission_board_keyboard", "..\..\..\..\Downloads\mission_board-master (1)\mission_board_keyboard\Project\mission_board_keyboard.csproj", "{9BDC0EAC-DFB8-41E5-9740-BEC8D0EF400C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mission_board_keyboard", "mission_board_keyboard\mission_board_keyboard.csproj", "{9BDC0EAC-DFB8-41E5-9740-BEC8D0EF400C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
