@@ -1,7 +1,4 @@
-﻿using System.Windows.Threading;
-using System.Windows.Controls;
-using System;
-using System.Windows.Interop;
+﻿using System;
 using System.Windows.Forms;
 
 namespace mission_board
@@ -11,18 +8,9 @@ namespace mission_board
     /// </summary>
     public partial class MapUserControl : System.Windows.Controls.UserControl
     {
-        private DispatcherTimer dispatcherTimer = new DispatcherTimer();
-        private readonly int threshold = 3 * 60 * 1000;
-        private uint ticksSinceLastActivity = 0;
-        private const int WM_MOUSEMOVE = 0x0200;
-
         public MapUserControl()
         {
             InitializeComponent();
-            
-            dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
-            dispatcherTimer.Start();
         }
 
         //  Updates the current seconds display and calls

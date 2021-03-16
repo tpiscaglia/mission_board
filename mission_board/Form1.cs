@@ -39,8 +39,6 @@ namespace mission_board
             _pdfLetterDirectory = AppDomain.CurrentDomain.BaseDirectory + Properties.Settings.Default.PdfLetterDirectory;
             _jpgLetterDirectory = AppDomain.CurrentDomain.BaseDirectory + Properties.Settings.Default.JpgLetterDirectory;
             _bingApiKey = ConfigurationManager.AppSettings.Get("BingApiKey");
-            _emailUsername = ConfigurationManager.AppSettings.Get("EmailUsername");
-            _emailPassword = ConfigurationManager.AppSettings.Get("EmailPassword");
 
             pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
@@ -366,6 +364,17 @@ namespace mission_board
         {
             foreach (Missionary missionary in missionaryList.Values)
                 missionary.Letters.Clear();
+        }
+
+        public void CycleMissionary()
+        {
+            if (missionary_listBox.SelectedIndex == missionary_listBox.Items.Count - 1)
+                missionary_listBox.SelectedIndex = 0;
+            else
+                missionary_listBox.SelectedIndex++;
+
+            ShowMap(false);
+            UpdateProfile(missionary_listBox.Text);
         }
 
         private void missionary_listBox_SelectedIndexChanged(object sender, EventArgs e)
