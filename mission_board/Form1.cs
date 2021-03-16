@@ -64,6 +64,17 @@ namespace mission_board
             LoadMissionaryList();
         }
 
+        public void Form1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Escape)
+            {
+                if (MessageBox.Show("Would you like to exit the application?", "Exit?", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    Application.Exit();
+                }
+            }
+        }
+
         public List<string> GetLetterPages(string pdf)
         {
             string pdfFileLocation;
