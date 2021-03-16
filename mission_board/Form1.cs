@@ -6,8 +6,6 @@ using System.Windows.Forms;
 using System.IO;
 using Microsoft.Maps.MapControl.WPF;
 using System.Drawing;
-using System.Net.Mail;
-using System.Net;
 using System.Drawing.Imaging;
 using System.Configuration;
 
@@ -55,7 +53,6 @@ namespace mission_board
             mapUserControl1.Map.ViewChangeOnFrame += Map_ViewChangeOnFrame;
             ShowMap(true);
 
-            keyboard1.Location = new Point(500, 700);
 
             if (!LoadMissionaryData(_missionaryDataFileName))
             {
@@ -404,7 +401,6 @@ namespace mission_board
         private void UpdateProfile(string name)
         {
             ShowMap(false);
-            keyboard1.Visible = false;
             string missionaryName = LookupMissionaryListbox(name);
             selectedMissionary = missionaryName;
 
@@ -483,61 +479,6 @@ namespace mission_board
             UpdateProfile(selectedPushpinName);
         }
 
-        private void send_mail_Click(object sender, EventArgs e)
-        {
-            keyboard1.Text = "";
-            keyboard1.Visible = true;
-            keyboard1.BringToFront();
-        }
-
-        private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
-        {
-            SendEmail(keyboard1.Text, _emailUsername, "smtp.gmail.com", "Mission Board Letter", string.Empty, selectedLetter);
-        }
-
-        public void SendEmail(string recipient, string sender, string smtp_server, string subject, string message, string attachment)
-        {
-            try
-            {
-                MailMessage mailMsg = new MailMessage();
-
-                mailMsg.To.Add(new MailAddress(recipient));
-                mailMsg.From = new MailAddress(sender);
-                mailMsg.Subject = subject;
-                mailMsg.IsBodyHtml = true;
-                mailMsg.Body = message;
-                mailMsg.Attachments.Add(new Attachment(attachment));
-                mailMsg.Priority = MailPriority.Normal;
-
-                SmtpClient smtpClient = new SmtpClient(smtp_server);
-                smtpClient.Port = 587; // for gmail
-
-                smtpClient.EnableSsl = true;
-                smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-                smtpClient.UseDefaultCredentials = false;
-                smtpClient.Credentials = new NetworkCredential(_emailUsername, _emailPassword);
-                smtpClient.Send(mailMsg);
-            }
-            catch (Exception e)
-            {
-                File.AppendAllText(_errorLogFileName,
-                    $"{DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()} {e.Message + Environment.NewLine}");
-            }
-
-        }
-
-        private void keyboard1_SendButtonClick(object sender, EventArgs e)
-        {
-            /// TODO:
-            /// VERY BAD - FIX THIS
-            if (keyboard1.Text == "stark9355")
-                ActiveForm.Dispose();
-            keyboard1.Visible = false;
-
-            if (backgroundWorker1.IsBusy != true)
-                backgroundWorker1.RunWorkerAsync();
-        }
-
         private void back_to_map_button_Click(object sender, EventArgs e)
         {
             ShowMap(true);
@@ -558,14 +499,9 @@ namespace mission_board
             selectedPushpinName = missionary_name;
         }
 
-        private void keyboard1_Leave(object sender, EventArgs e)
-        {
-            
-        }
-
         private void panel1_MouseClick(object sender, MouseEventArgs e)
         {
-            keyboard1.Visible = false;
+            
         }
 
         private void button1_Click(object sender, EventArgs e)

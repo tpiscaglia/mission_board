@@ -174,12 +174,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\mission_board_keyboard\mission_board_keyboard.csproj">
-      <Project>{9bdc0eac-dfb8-41e5-9740-bec8d0ef400c}</Project>
-      <Name>mission_board_keyboard</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

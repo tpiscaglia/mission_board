@@ -36,11 +36,8 @@
             this.recent_letter_listBox = new System.Windows.Forms.ListBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.back_to_map_button = new System.Windows.Forms.Button();
-            this.keyboard1 = new mission_board_keyboard.keyboard();
-            this.send_mail = new System.Windows.Forms.Button();
             this.missionary_letter_list_label = new System.Windows.Forms.Label();
             this.mission_field_label = new System.Windows.Forms.Label();
             this.name_label = new System.Windows.Forms.Label();
@@ -97,10 +94,6 @@
             this.label2.TabIndex = 11;
             this.label2.Text = "Recent Letters";
             // 
-            // backgroundWorker1
-            // 
-            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            // 
             // recent_letter_listBox
             // 
             this.recent_letter_listBox.Font = new System.Drawing.Font("Georgia", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -118,11 +111,8 @@
             this.panel1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("panel1.BackgroundImage")));
             this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.panel1.Controls.Add(this.pictureBox1);
-            this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.back_to_map_button);
-            this.panel1.Controls.Add(this.keyboard1);
-            this.panel1.Controls.Add(this.send_mail);
             this.panel1.Controls.Add(this.missionary_letter_list_label);
             this.panel1.Controls.Add(this.mission_field_label);
             this.panel1.Controls.Add(this.name_label);
@@ -145,24 +135,12 @@
             this.pictureBox1.TabIndex = 16;
             this.pictureBox1.TabStop = false;
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.BackColor = System.Drawing.Color.Transparent;
-            this.label4.Font = new System.Drawing.Font("Georgia", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(463, 628);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(298, 29);
-            this.label4.TabIndex = 15;
-            this.label4.Text = "Send This Letter To Me";
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.BackColor = System.Drawing.Color.Transparent;
             this.label3.Font = new System.Drawing.Font("Georgia", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(108, 628);
+            this.label3.Location = new System.Drawing.Point(266, 627);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(259, 29);
@@ -174,39 +152,13 @@
             this.back_to_map_button.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("back_to_map_button.BackgroundImage")));
             this.back_to_map_button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.back_to_map_button.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.back_to_map_button.Location = new System.Drawing.Point(151, 671);
+            this.back_to_map_button.Location = new System.Drawing.Point(298, 673);
             this.back_to_map_button.Margin = new System.Windows.Forms.Padding(4);
             this.back_to_map_button.Name = "back_to_map_button";
             this.back_to_map_button.Size = new System.Drawing.Size(193, 122);
             this.back_to_map_button.TabIndex = 13;
             this.back_to_map_button.UseVisualStyleBackColor = true;
             this.back_to_map_button.Click += new System.EventHandler(this.back_to_map_button_Click);
-            // 
-            // keyboard1
-            // 
-            this.keyboard1.BackColor = System.Drawing.Color.Black;
-            this.keyboard1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("keyboard1.BackgroundImage")));
-            this.keyboard1.Location = new System.Drawing.Point(-331, 866);
-            this.keyboard1.Margin = new System.Windows.Forms.Padding(5);
-            this.keyboard1.Name = "keyboard1";
-            this.keyboard1.Size = new System.Drawing.Size(1227, 450);
-            this.keyboard1.TabIndex = 12;
-            this.keyboard1.Visible = false;
-            this.keyboard1.SendButtonClick += new System.EventHandler(this.keyboard1_SendButtonClick);
-            this.keyboard1.Leave += new System.EventHandler(this.keyboard1_Leave);
-            // 
-            // send_mail
-            // 
-            this.send_mail.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("send_mail.BackgroundImage")));
-            this.send_mail.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.send_mail.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.send_mail.Location = new System.Drawing.Point(515, 671);
-            this.send_mail.Margin = new System.Windows.Forms.Padding(4);
-            this.send_mail.Name = "send_mail";
-            this.send_mail.Size = new System.Drawing.Size(193, 122);
-            this.send_mail.TabIndex = 6;
-            this.send_mail.UseVisualStyleBackColor = true;
-            this.send_mail.Click += new System.EventHandler(this.send_mail_Click);
             // 
             // missionary_letter_list_label
             // 
@@ -423,12 +375,9 @@
         private System.Windows.Forms.Label inforbox_name_label;
         private System.Windows.Forms.Button view_profile_button;
         private System.Windows.Forms.Label field_label;
-        private mission_board_keyboard.keyboard keyboard1;
-        private System.Windows.Forms.Button send_mail;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button back_to_map_button;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ListBox recent_letter_listBox;
         private System.Windows.Forms.PictureBox pictureBox1;
     }
