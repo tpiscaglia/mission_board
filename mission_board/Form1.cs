@@ -183,7 +183,7 @@ namespace mission_board
                 Missionary missionary;
                 foreach (string line in missionaryDataRows)
                 {
-                    if (!line.Contains("Display_Name")) // skip first line, I don't like doing it this way, shameful
+                    if (!line.ToLower().Contains("display_name")) // skip first line, I don't like doing it this way, shameful
                     {
                         // [0]          [1]             [2]         [3]         [4]         [5]         [6]     [7]
                         // Display_Name	Mission_Field	First_Name	Last_Name	Latitude	Longitude	Email	Profile_Picture
@@ -249,6 +249,9 @@ namespace mission_board
         private void LoadMissionaryLetters()
         {
             string missionaryName = string.Empty;
+
+            if (!Directory.Exists(_pdfLetterDirectory))
+                Directory.CreateDirectory(_pdfLetterDirectory);
 
             missionaryLetters = new DirectoryInfo(_pdfLetterDirectory).GetFiles().OrderByDescending(x => x.LastAccessTime).ToList();
 
