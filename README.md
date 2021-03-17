@@ -15,25 +15,29 @@ Windows OS
 Dot Net Framework
 ```
 
-<!--
-### Installing
 
-A step by step series of examples that tell you how to get a development env running
+### Running Locally
 
-Say what the step will be
+A few things need to be done before you can run the project locally.  First off, you'll likely need to download/update any nuget packages you may be missing or are out of date.  Once that's done, you'll need to create a CSV file that the program will read to get the missionary info. The CSV file needs to be in the following format:
 
 ```
-Give the example
-```
-
-And repeat
+[0]           [1]             [2]           [3]         [4]       [5]         [6]     [7]               [8]
+Display_Name  Mission_Field   First_Name    Last_Name   Latitude  Longitude   Email   Profile_Picture   Letter_Alias
 
 ```
-until finished
+
+Then, you'll want to create a config file that will contain your secrets.  For obvious reasons, this file is not in source control.  This file will be call AppSettingsSecrets.config.  You will want to add this file to the project.  The gitignore file is setup to ignore this file so as to not save your secrets in a publicly available source control.  The file needs to have the following tags:
+
+```
+<appSettings>
+  <add key="BingApiKey" value="" />
+  <add key="EmailUsername" value=""/>
+  <add key="EmailPassword" value=""/>
+</appSettings>
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
--->
+Finally, you will want to fill out the values for the settings in both the regular app.config file (under the applicationSettings node) and in the secrets file you just created.  Once done, you should be able to run the project.
+
 ## Deployment
 
 There are two ways to deploy the application.  The first is to build the setup project and use that to distribute and install the application.  The second is to publish as a runonce application using Visual Studio.
