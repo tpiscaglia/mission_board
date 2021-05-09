@@ -236,7 +236,7 @@
             this.infobox_panel.Margin = new System.Windows.Forms.Padding(4);
             this.infobox_panel.MaximumSize = new System.Drawing.Size(0, 150);
             this.infobox_panel.Name = "infobox_panel";
-            this.infobox_panel.Size = new System.Drawing.Size(230, 150);
+            this.infobox_panel.Size = new System.Drawing.Size(288, 188);
             this.infobox_panel.TabIndex = 6;
             // 
             // field_label
@@ -248,7 +248,7 @@
             this.field_label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.field_label.MinimumSize = new System.Drawing.Size(67, 0);
             this.field_label.Name = "field_label";
-            this.field_label.Size = new System.Drawing.Size(67, 28);
+            this.field_label.Size = new System.Drawing.Size(84, 35);
             this.field_label.TabIndex = 3;
             this.field_label.Text = "Field";
             this.field_label.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -261,7 +261,7 @@
             this.view_profile_button.BackColor = System.Drawing.SystemColors.Menu;
             this.view_profile_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.view_profile_button.Font = new System.Drawing.Font("Georgia", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.view_profile_button.Location = new System.Drawing.Point(60, 101);
+            this.view_profile_button.Location = new System.Drawing.Point(60, 63);
             this.view_profile_button.Margin = new System.Windows.Forms.Padding(4);
             this.view_profile_button.Name = "view_profile_button";
             this.view_profile_button.Size = new System.Drawing.Size(112, 32);
@@ -286,7 +286,7 @@
             // 
             // close_button
             // 
-            this.close_button.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("close_button.BackgroundImage")));
+            this.close_button.BackgroundImage = global::mission_board.Properties.Resources.BBC_Logo;
             this.close_button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.close_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.close_button.Location = new System.Drawing.Point(67, 1113);
@@ -301,6 +301,7 @@
             // 
             // home_button
             // 
+            this.home_button.BackgroundImage = global::mission_board.Properties.Resources.globe_icon;
             this.home_button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.home_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.home_button.Location = new System.Drawing.Point(67, 5);
@@ -327,7 +328,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.ClientSize = new System.Drawing.Size(1942, 1102);
+            this.ClientSize = new System.Drawing.Size(7411, 3350);
             this.ControlBox = false;
             this.Controls.Add(this.recent_letter_listBox);
             this.Controls.Add(this.panel1);

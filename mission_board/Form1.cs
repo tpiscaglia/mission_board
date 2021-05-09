@@ -18,8 +18,6 @@ namespace mission_board
         private readonly string _pdfLetterDirectory;
         private readonly string _jpgLetterDirectory;
         private readonly string _bingApiKey;
-        private readonly string _emailUsername;
-        private readonly string _emailPassword;
         private List<FileInfo> missionaryLetters;
         private string selectedLetter;
         private string selectedMissionary;

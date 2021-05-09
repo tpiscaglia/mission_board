@@ -63,9 +63,19 @@ namespace mission_board.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap pbc {
+        internal static System.Drawing.Bitmap BBC_Logo {
             get {
-                object obj = ResourceManager.GetObject("pbc", resourceCulture);
+                object obj = ResourceManager.GetObject("BBC_Logo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap globe_icon {
+            get {
+                object obj = ResourceManager.GetObject("globe_icon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -86,16 +96,6 @@ namespace mission_board.Properties {
         internal static System.Drawing.Bitmap telescope {
             get {
                 object obj = ResourceManager.GetObject("telescope", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap telescope1 {
-            get {
-                object obj = ResourceManager.GetObject("telescope1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
