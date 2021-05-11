@@ -1,97 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.IO;
 
 namespace mission_board
 {
-    public class missionary
+    public class Missionary
     {
-        private string display_name;
-        private string mission_field;
-        private string first_name;
-        private string last_name;
-        private string letter_alias;
-        private string email;
-        private string profile_picture;
-        private double latitude;
-        private double longitude;
-        private List<FileInfo> letters;
-
-        public missionary()
+        public Missionary()
         {
-            display_name = "";
-            mission_field = "";
-            first_name = "";
-            last_name = "";
-            letter_alias = "";
-            profile_picture = "";
-            email = "";
-            latitude = 0;
-            longitude = 0;
-            letters = new List<FileInfo>();
+            DisplayName = MissionField = FirstName = LastName = LetterAlias = ProfilePicture = Email = string.Empty;
+            Latitude = Longitude = 0d;
+            Letters = new List<FileInfo>();
         }
 
-        public List<FileInfo> Letters
-        {
-            get { return letters; }
-            set { letters = value; }
-        }
+        public List<FileInfo> Letters { get; set; }
 
-        public string DisplayName
-        {
-            get { return display_name; }
-            set { display_name = value; }
-        }
+        public string DisplayName { get; set; }
 
-        public string MissionField
-        {
-            get { return mission_field; }
-            set { mission_field = value; }
-        }
+        public string MissionField { get; set; }
 
-        public string FirstName
-        {
-            get { return first_name; }
-            set { first_name = value; }
-        }
+        public string FirstName { get; set; }
 
-        public string LastName
-        {
-            get { return last_name; }
-            set { last_name = value; }
-        }
+        public string LastName { get; set; }
 
-        public string LetterAlias
-        {
-            get { return letter_alias; }
-            set { letter_alias = value; }
-        }
+        public string LetterAlias { get; set; }
 
-        public double Latitude
-        {
-            get { return latitude; }
-            set { latitude = value; }
-        }
+        public double Latitude { get; set; }
 
-        public double Longitude
-        {
-            get { return longitude; }
-            set { longitude = value; }
-        }
+        public double Longitude { get; set; }
 
-        public string ProfilePicture
-        {
-            get { return profile_picture; }
-            set { profile_picture = value; }
-        }
+        public string ProfilePicture { get; set; }
 
-        public string Email
-        {
-            get { return email; }
-            set { email = value; }
-        }
+        public string Email { get; set; }
     }
 }
